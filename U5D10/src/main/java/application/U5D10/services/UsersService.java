@@ -60,5 +60,17 @@ public class UsersService {
     }
 
 
+    public User findByIdAndUpdate(int id , User body) throws NotUserFoundException{
+        User found = findById(id);
+        found.setNome(body.getNome() != null ? body.getNome() : found.getNome());
+        found.setCognome(body.getCognome()  != null ? body.getCognome() : found.getCognome());
+        found.setUserPicture(found.getUserPicture());
+        found.setEmail(body.getEmail()  != null ? body.getEmail() : found.getEmail());
+        found.setSurname(body.getSurname() != null ? body.getSurname() : found.getSurname());
+        usersRepo.save(found);
+        return found;
+    }
+
+
 
 }

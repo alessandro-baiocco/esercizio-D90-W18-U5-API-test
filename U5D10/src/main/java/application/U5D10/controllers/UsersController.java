@@ -60,6 +60,13 @@ public class UsersController {
 
 
 
+    @PutMapping("/{id}")
+    public User findByIdAndUpdate(@PathVariable int id, @RequestBody User body){
+        return usersService.findByIdAndUpdate(id, body);
+    }
+
+
+
 
 
 
