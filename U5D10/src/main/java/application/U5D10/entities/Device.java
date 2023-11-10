@@ -16,6 +16,7 @@ public class Device {
     @Id
     @GeneratedValue
     private int id;
+    @Enumerated(EnumType.STRING)
     private DeviceStatus status;
     private String type;
     private boolean disponibile;
