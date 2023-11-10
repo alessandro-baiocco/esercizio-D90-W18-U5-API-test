@@ -51,6 +51,11 @@ public class DevicesService {
 
     }
 
+    public void findByIdAndDelete(int id) throws NotDeviceFoundException{
+        Device found = findById(id);
+        devicesRepo.delete(found);
+    }
+
 
 
 

@@ -50,10 +50,12 @@ public class UsersController {
             }
 
         }
+    }
 
-
-
-
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable int id){
+        usersService.findByIdAndDelete(id);
     }
 
 

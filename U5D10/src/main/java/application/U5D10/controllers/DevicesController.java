@@ -50,4 +50,13 @@ public class DevicesController {
 
         }
     }
+
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteDevice(@PathVariable int id){
+       devicesService.findByIdAndDelete(id);
+    }
+
+
 }

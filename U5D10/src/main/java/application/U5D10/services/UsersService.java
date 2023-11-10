@@ -54,4 +54,11 @@ public class UsersService {
     }
 
 
+    public void findByIdAndDelete(int id) throws NotUserFoundException{
+        User found = findById(id);
+        usersRepo.delete(found);
+    }
+
+
+
 }
