@@ -31,7 +31,7 @@ public class DevicesService {
         return devicesRepo.findById(id).orElseThrow(() -> new NotDeviceFoundException(id));
     }
 
-    public Page<Device> getAllUser(int page , int size , String order){
+    public Page<Device> getAllDevice(int page , int size , String order){
         Pageable pageable = PageRequest.of(page, size , Sort.by(order));
         return devicesRepo.findAll(pageable);
     }
@@ -42,15 +42,15 @@ public class DevicesService {
 
     public Device save(NewDeviceDTO body) throws IOException {
 try {
-    Device newDevice = new Device();
+     Device newDevice = new Device();
 
-    newDevice.setType(body.type());
-    newDevice.setStatus(DeviceStatus.valueOf(body.status()));
-    newDevice.setDisponibile(true);
+        newDevice.setType(body.type());
+        newDevice.setStatus(DeviceStatus.valueOf(body.status()));
+        newDevice.setDisponibile(newDevice.getStatus().compareTo(DeviceStatus.disponibile) == 0);
 
-    return devicesRepo.save(newDevice);
+        return devicesRepo.save(newDevice);
     }catch (IllegalArgumentException ex){
-    throw new BadRequestException("lo status del dispositivo non è valido");
+        throw new BadRequestException(body.status() + " come status del dispositivo non è valido");
     }
 
 
@@ -71,7 +71,7 @@ try {
 
             return devicesRepo.save(found);
         }catch (IllegalArgumentException ex){
-            throw new BadRequestException("lo status del dispositivo non è valido");
+            throw new BadRequestException(body.status() + " come status del dispositivo non è valido");
         }
     }
 

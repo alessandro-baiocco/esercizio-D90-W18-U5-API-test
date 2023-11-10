@@ -6,11 +6,9 @@ import application.U5D10.payloads.DevicePutDTO;
 import application.U5D10.payloads.DevicePutUser;
 import application.U5D10.payloads.NewDeviceDTO;
 import application.U5D10.services.DevicesService;
-import org.hibernate.engine.jdbc.mutation.spi.BindingGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +30,7 @@ public class DevicesController {
     public Page<Device> getAlldevices(@RequestParam(defaultValue = "0")int page ,
                                  @RequestParam(defaultValue = "10")int size,
                                  @RequestParam(defaultValue = "id")String order){
-        return devicesService.getAllUser(page , size , order);
+        return devicesService.getAllDevice(page , size , order);
     }
 
 

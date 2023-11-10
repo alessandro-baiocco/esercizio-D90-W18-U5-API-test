@@ -8,14 +8,12 @@ import application.U5D10.exceptions.NotUserFoundException;
 import application.U5D10.payloads.NewUserDTO;
 import application.U5D10.payloads.UsersPutDTO;
 import application.U5D10.services.UsersService;
-import jakarta.validation.constraints.Past;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -87,9 +85,6 @@ public class UsersController {
     @PostMapping("/{id}/upload")
     public User changeUserImg(@PathVariable int id , @RequestParam("avatar") MultipartFile body) throws IOException , NotUserFoundException {
             return usersService.uploadPicture(id, body) ;
-
-
-
     }
 
 }

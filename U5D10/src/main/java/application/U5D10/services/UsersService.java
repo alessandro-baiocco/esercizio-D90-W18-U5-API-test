@@ -4,10 +4,8 @@ import application.U5D10.entities.Device;
 import application.U5D10.entities.User;
 import application.U5D10.exceptions.BadRequestException;
 import application.U5D10.exceptions.NotUserFoundException;
-import application.U5D10.payloads.NewDeviceDTO;
 import application.U5D10.payloads.NewUserDTO;
 import application.U5D10.payloads.UsersPutDTO;
-import application.U5D10.repositories.DevicesRepository;
 import application.U5D10.repositories.UsersRepository;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
@@ -17,9 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.io.IOException;
 import java.util.List;
@@ -71,7 +67,7 @@ public class UsersService {
     }
 
 
-    public User findByIdAndUpdate(int id , UsersPutDTO body) throws NotUserFoundException , IOException{
+    public User findByIdAndUpdate(int id , UsersPutDTO body) throws IOException{
         User found = findById(id);
         found.setNome(body.nome() != null ? body.nome() : found.getNome());
         found.setCognome(body.cognome()  != null ? body.cognome() : found.getCognome());
@@ -81,7 +77,7 @@ public class UsersService {
     }
 
 
-    public User uploadPicture(int id , MultipartFile file) throws IOException, NotUserFoundException, BadRequestException {
+    public User uploadPicture(int id , MultipartFile file) throws IOException, BadRequestException {
         try {
             User found = findById(id);
             String newImage = (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
