@@ -41,14 +41,18 @@ public class DevicesService {
 
 
     public Device save(NewDeviceDTO body) throws IOException {
+try {
+    Device newDevice = new Device();
 
-        Device newDevice = new Device();
+    newDevice.setType(body.type());
+    newDevice.setStatus(DeviceStatus.valueOf(body.status()));
+    newDevice.setDisponibile(true);
 
-        newDevice.setType(body.type());
-        newDevice.setStatus(DeviceStatus.valueOf(body.status()));
-        newDevice.setDisponibile(true);
+    return devicesRepo.save(newDevice);
+    }catch (IllegalArgumentException ex){
+    throw new BadRequestException("lo status del dispositivo non è valido");
+    }
 
-        return devicesRepo.save(newDevice);
 
     }
 
@@ -58,18 +62,20 @@ public class DevicesService {
     }
 
     public Device findByIdAndUpdate(int id , DevicePutDTO body) throws NotDeviceFoundException {
-        Device found = findById(id);
+    try{
+            Device found = findById(id);
 
-        found.setStatus(body.status() != null ? body.status() : found.getStatus());
-        found.setType(body.type()  != null ? body.type() : found.getType());
-        found.setDisponibile(found.getStatus().compareTo(DeviceStatus.disponibile) == 0);
+            found.setStatus(body.status() != null ? DeviceStatus.valueOf(body.status())  : found.getStatus());
+            found.setType(body.type()  != null ? body.type() : found.getType());
+            found.setDisponibile(found.getStatus().compareTo(DeviceStatus.disponibile) == 0);
 
-
-
-        return devicesRepo.save(found);
+            return devicesRepo.save(found);
+        }catch (IllegalArgumentException ex){
+            throw new BadRequestException("lo status del dispositivo non è valido");
+        }
     }
 
-    public Device findByIdAndUpdate(int id , DevicePutUser body ) throws NotDeviceFoundException{
+    public Device findByIdAndUpdate(int id , DevicePutUser body ) throws NotDeviceFoundException {
         Device found = findById(id);
         User userFound = usersRepo.findById(body.user()).orElseThrow(() -> new NotUserFoundException(id));
     if(found.getStatus().compareTo(DeviceStatus.disponibile) == 0){

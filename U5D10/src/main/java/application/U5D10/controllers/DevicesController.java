@@ -6,9 +6,11 @@ import application.U5D10.payloads.DevicePutDTO;
 import application.U5D10.payloads.DevicePutUser;
 import application.U5D10.payloads.NewDeviceDTO;
 import application.U5D10.services.DevicesService;
+import org.hibernate.engine.jdbc.mutation.spi.BindingGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -58,14 +60,19 @@ public class DevicesController {
     }
 
     @PutMapping("/{id}")
-    public Device findByIdAndUpdate(@PathVariable int id, @RequestBody DevicePutDTO body){
-        return devicesService.findByIdAndUpdate(id, body);
+    public Device findByIdAndUpdate(@PathVariable int id, @RequestBody @Validated DevicePutDTO body , BindingResult validation){
+            if(validation.hasErrors()){
+                throw new BadRequestException(validation.getAllErrors());
+            }else {
+                return devicesService.findByIdAndUpdate(id, body);
+            }
     }
 
 
     @PutMapping("/{id}/setuser")
     public Device findByIdAndUpdate(@PathVariable int id, @RequestBody DevicePutUser body){
         return devicesService.findByIdAndUpdate(id, body);
+
     }
 
 
