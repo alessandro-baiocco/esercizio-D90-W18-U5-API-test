@@ -1,8 +1,10 @@
 package application.U5D10.controllers;
 
 
+import application.U5D10.entities.Device;
 import application.U5D10.entities.User;
 import application.U5D10.exceptions.BadRequestException;
+import application.U5D10.exceptions.NotUserFoundException;
 import application.U5D10.payloads.NewUserDTO;
 import application.U5D10.services.UsersService;
 import jakarta.validation.constraints.Past;
@@ -13,8 +15,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -33,6 +37,11 @@ public class UsersController {
                                  @RequestParam(defaultValue = "10")int size,
                                  @RequestParam(defaultValue = "id")String order){
             return usersService.getAllUser(page , size , order);
+    }
+
+    @GetMapping("/{id}/devices")
+    public List<Device> getUserDevices(@PathVariable int id){
+        return usersService.findUserDevices(id);
     }
 
 
@@ -66,9 +75,10 @@ public class UsersController {
     }
 
 
+    @PostMapping("/{id}/upload")
+    public User changeUserImg(@PathVariable int id , @RequestParam("avatar") MultipartFile body) throws IOException , NotUserFoundException {
+        return usersService.uploadPicture(id, body);
 
-
-
-
+    }
 
 }

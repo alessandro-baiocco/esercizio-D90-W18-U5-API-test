@@ -26,12 +26,6 @@ public class ExceptionsHandler {
             return new ErrorsResponseWithListDTO(e.getMessage(), new Date(), new ArrayList<>());
         }
     }
-    @ExceptionHandler(DeviceNotAvalableException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorsPayload handleNotFound(DeviceNotAvalableException e){
-        return new ErrorsPayload(e.getMessage(), new Date());
-    }
-
 
     @ExceptionHandler(NotUserFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)

@@ -5,11 +5,9 @@ import application.U5D10.entities.Device;
 import application.U5D10.entities.User;
 import application.U5D10.enums.DeviceStatus;
 import application.U5D10.exceptions.BadRequestException;
-import application.U5D10.exceptions.DeviceNotAvalableException;
 import application.U5D10.exceptions.NotDeviceFoundException;
 import application.U5D10.exceptions.NotUserFoundException;
 import application.U5D10.payloads.NewDeviceDTO;
-import application.U5D10.payloads.NewUserDTO;
 import application.U5D10.repositories.DevicesRepository;
 import application.U5D10.repositories.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
 
@@ -66,7 +61,7 @@ public class DevicesService {
 
         found.setStatus(body.getStatus() != null ? body.getStatus() : found.getStatus());
         found.setType(body.getType()  != null ? body.getType() : found.getType());
-        found.setDisponibile(body.getUser() == null);
+        found.setDisponibile(found.getStatus().compareTo(DeviceStatus.disponibile) == 0);
 
 
 
@@ -79,14 +74,14 @@ public class DevicesService {
     if(found.getStatus().compareTo(DeviceStatus.disponibile) == 0){
      found.setStatus(DeviceStatus.assegnato);
      found.setUser(userFound);
-     found.setDisponibile(true);
+     found.setDisponibile(false);
      return devicesRepo.save(found);
     }else if(found.getStatus().compareTo(DeviceStatus.manutenzione) == 0) {
-        throw new DeviceNotAvalableException("il dispositivo è in manutenzione");
+        throw new BadRequestException("il dispositivo è in manutenzione");
     }else if(found.getStatus().compareTo(DeviceStatus.dismesso) == 0) {
-        throw new DeviceNotAvalableException("il dispositivo non è disponibile");
+        throw new BadRequestException("il dispositivo non è disponibile");
     }else  {
-        throw new DeviceNotAvalableException("il dispositivo è già stato assegnato");
+        throw new BadRequestException("il dispositivo è già stato assegnato");
     }
 
     }
