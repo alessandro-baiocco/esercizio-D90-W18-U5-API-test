@@ -1,13 +1,11 @@
 package application.U5D10.controllers;
 
 import application.U5D10.entities.Device;
-import application.U5D10.entities.User;
 import application.U5D10.exceptions.BadRequestException;
-import application.U5D10.exceptions.NotUserFoundException;
+import application.U5D10.payloads.DevicePutDTO;
+import application.U5D10.payloads.DevicePutUser;
 import application.U5D10.payloads.NewDeviceDTO;
-import application.U5D10.payloads.NewUserDTO;
 import application.U5D10.services.DevicesService;
-import application.U5D10.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -60,13 +58,13 @@ public class DevicesController {
     }
 
     @PutMapping("/{id}")
-    public Device findByIdAndUpdate(@PathVariable int id, @RequestBody Device body){
+    public Device findByIdAndUpdate(@PathVariable int id, @RequestBody DevicePutDTO body){
         return devicesService.findByIdAndUpdate(id, body);
     }
 
 
     @PutMapping("/{id}/setuser")
-    public Device findByIdAndUpdate(@PathVariable int id, @RequestBody DevicePut body){
+    public Device findByIdAndUpdate(@PathVariable int id, @RequestBody DevicePutUser body){
         return devicesService.findByIdAndUpdate(id, body);
     }
 

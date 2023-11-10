@@ -6,6 +6,7 @@ import application.U5D10.exceptions.BadRequestException;
 import application.U5D10.exceptions.NotUserFoundException;
 import application.U5D10.payloads.NewDeviceDTO;
 import application.U5D10.payloads.NewUserDTO;
+import application.U5D10.payloads.UsersPutDTO;
 import application.U5D10.repositories.DevicesRepository;
 import application.U5D10.repositories.UsersRepository;
 import com.cloudinary.Cloudinary;
@@ -16,7 +17,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,8 +28,6 @@ import java.util.List;
 public class UsersService {
     @Autowired
     private UsersRepository usersRepo;
-    @Autowired
-    private DevicesRepository devicesRepo;
     @Autowired
     private Cloudinary cloudinary;
 
@@ -70,24 +71,28 @@ public class UsersService {
     }
 
 
-    public User findByIdAndUpdate(int id , User body) throws NotUserFoundException{
+    public User findByIdAndUpdate(int id , UsersPutDTO body) throws NotUserFoundException , IOException{
         User found = findById(id);
-        found.setNome(body.getNome() != null ? body.getNome() : found.getNome());
-        found.setCognome(body.getCognome()  != null ? body.getCognome() : found.getCognome());
-        found.setUserPicture(found.getUserPicture());
-        found.setEmail(body.getEmail()  != null ? body.getEmail() : found.getEmail());
-        found.setSurname(body.getSurname() != null ? body.getSurname() : found.getSurname());
-        usersRepo.save(found);
-        return found;
+        found.setNome(body.nome() != null ? body.nome() : found.getNome());
+        found.setCognome(body.cognome()  != null ? body.cognome() : found.getCognome());
+        found.setEmail(body.email()  != null ? body.email() : found.getEmail());
+        found.setSurname(body.surname() != null ? body.surname() : found.getSurname());
+        return usersRepo.save(found);
     }
 
 
-    public User uploadPicture(int id , MultipartFile file) throws IOException, NotUserFoundException  {
-        User found = usersRepo.findById(id).orElseThrow(() -> new NotUserFoundException(id));
-        String newImage = (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
-        found.setUserPicture(newImage);
+    public User uploadPicture(int id , MultipartFile file) throws IOException, NotUserFoundException, BadRequestException {
+        try {
+            User found = findById(id);
+            String newImage = (String) cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+            found.setUserPicture(newImage);
+            return usersRepo.save(found);
+        }catch (NotUserFoundException ex){
+            throw new NotUserFoundException(id);
+        } catch (RuntimeException ex){
+            throw new BadRequestException("file vuoto o invalido");
+        }
 
-        return usersRepo.save(found);
     }
 
 

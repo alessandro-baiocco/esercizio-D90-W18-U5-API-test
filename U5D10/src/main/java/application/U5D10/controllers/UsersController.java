@@ -6,6 +6,7 @@ import application.U5D10.entities.User;
 import application.U5D10.exceptions.BadRequestException;
 import application.U5D10.exceptions.NotUserFoundException;
 import application.U5D10.payloads.NewUserDTO;
+import application.U5D10.payloads.UsersPutDTO;
 import application.U5D10.services.UsersService;
 import jakarta.validation.constraints.Past;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class UsersController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public User saveUser(@RequestBody @Validated NewUserDTO body , BindingResult validation){
+    public User saveUser(@RequestBody @Validated NewUserDTO body, BindingResult validation ){
         if(validation.hasErrors()){
             throw new BadRequestException(validation.getAllErrors());
         } else {
@@ -70,14 +71,24 @@ public class UsersController {
 
 
     @PutMapping("/{id}")
-    public User findByIdAndUpdate(@PathVariable int id, @RequestBody User body){
-        return usersService.findByIdAndUpdate(id, body);
-    }
+    public User findByIdAndUpdate(@PathVariable int id, @RequestBody @Validated UsersPutDTO body, BindingResult validation){
+        if(validation.hasErrors()){
+            throw new BadRequestException(validation.getAllErrors());
+        }else {
+            try {
+                return usersService.findByIdAndUpdate(id, body);
+            }catch (IOException ex){
+                throw new RuntimeException(ex);
+            }
+
+    }}
 
 
     @PostMapping("/{id}/upload")
     public User changeUserImg(@PathVariable int id , @RequestParam("avatar") MultipartFile body) throws IOException , NotUserFoundException {
-        return usersService.uploadPicture(id, body);
+            return usersService.uploadPicture(id, body) ;
+
+
 
     }
 

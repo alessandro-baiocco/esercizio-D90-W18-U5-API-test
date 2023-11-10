@@ -1,6 +1,7 @@
 package application.U5D10.services;
 
-import application.U5D10.controllers.DevicePut;
+import application.U5D10.payloads.DevicePutDTO;
+import application.U5D10.payloads.DevicePutUser;
 import application.U5D10.entities.Device;
 import application.U5D10.entities.User;
 import application.U5D10.enums.DeviceStatus;
@@ -56,11 +57,11 @@ public class DevicesService {
         devicesRepo.delete(found);
     }
 
-    public Device findByIdAndUpdate(int id , Device body) throws NotDeviceFoundException {
+    public Device findByIdAndUpdate(int id , DevicePutDTO body) throws NotDeviceFoundException {
         Device found = findById(id);
 
-        found.setStatus(body.getStatus() != null ? body.getStatus() : found.getStatus());
-        found.setType(body.getType()  != null ? body.getType() : found.getType());
+        found.setStatus(body.status() != null ? body.status() : found.getStatus());
+        found.setType(body.type()  != null ? body.type() : found.getType());
         found.setDisponibile(found.getStatus().compareTo(DeviceStatus.disponibile) == 0);
 
 
@@ -68,9 +69,9 @@ public class DevicesService {
         return devicesRepo.save(found);
     }
 
-    public Device findByIdAndUpdate(int id , DevicePut body ) throws NotDeviceFoundException{
+    public Device findByIdAndUpdate(int id , DevicePutUser body ) throws NotDeviceFoundException{
         Device found = findById(id);
-        User userFound = usersRepo.findById(body.getUser()).orElseThrow(() -> new NotUserFoundException(id));
+        User userFound = usersRepo.findById(body.user()).orElseThrow(() -> new NotUserFoundException(id));
     if(found.getStatus().compareTo(DeviceStatus.disponibile) == 0){
      found.setStatus(DeviceStatus.assegnato);
      found.setUser(userFound);
